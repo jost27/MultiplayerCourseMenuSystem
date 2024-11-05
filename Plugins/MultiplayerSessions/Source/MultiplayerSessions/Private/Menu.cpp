@@ -38,6 +38,10 @@ void UMenu::MenuSetup(int32 NumberOfPublicConnections, FString TypeOfMatch, FStr
 
 	if (MultiplayerSessionsSubsystem)
 	{
+		if(!MultiplayerSessionsSubsystem->bIsLogged)
+		{
+			MultiplayerSessionsSubsystem->Login();
+		}
 		MultiplayerSessionsSubsystem->MultiplayerOnCreateSessionComplete.AddDynamic(this, &ThisClass::OnCreateSession);
 		MultiplayerSessionsSubsystem->MultiplayerOnFindSessionsComplete.AddUObject(this, &ThisClass::OnFindSessions);
 		MultiplayerSessionsSubsystem->MultiplayerOnJoinSessionComplete.AddUObject(this, &ThisClass::OnJoinSession);
@@ -52,6 +56,7 @@ bool UMenu::Initialize()
 	{
 		return false;
 	}
+	
 
 	if (HostButton)
 	{
@@ -149,7 +154,12 @@ void UMenu::OnStartSession(bool bWasSuccessful)
 
 void UMenu::HostButtonClicked()
 {
+	if(!MultiplayerSessionsSubsystem->bIsLogged)
+	{
+		return;
+	}
 	HostButton->SetIsEnabled(false);
+	
 	if (MultiplayerSessionsSubsystem)
 	{
 		MultiplayerSessionsSubsystem->CreateSession(NumPublicConnections, MatchType);
