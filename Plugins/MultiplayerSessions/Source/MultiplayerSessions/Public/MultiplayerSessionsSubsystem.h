@@ -35,8 +35,10 @@ public:
 	void JoinSession(const FOnlineSessionSearchResult& SessionResult);
 	void DestroySession();
 	void StartSession();
+	void Login();
 
 	bool IsValidSessionInterface();
+	bool bIsLogged{false};
 
 	//
 	// Our own custom delegates for the Menu class to bind callbacks to
@@ -58,6 +60,13 @@ protected:
 	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 	void OnDestroySessionComplete(FName SessionName, bool bWasSuccessful);
 	void OnStartSessionComplete(FName SessionName, bool bWasSuccessful);
+	
+ 
+	//Callback function. This function is ran when signing into EOS Game Services completes. 
+	void HandleLoginCompleted(int32 LocalUserNum, bool bWasSuccessful, const FUniqueNetId& UserId, const FString& Error);
+ 
+	//Delegate to bind callback event for login. 
+	FDelegateHandle LoginDelegateHandle;
 
 private:
 	IOnlineSessionPtr SessionInterface;
